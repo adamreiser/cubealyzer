@@ -1,17 +1,5 @@
 #!/usr/bin/env python3
 
-# https://api.deckbrew.com/mtg/cards?name=Mistmeadow Witch
-# https://github.com/kyleconroy/deckbrew
-
-# uses python3 class methods
-
-# for suggestions: "enter the constraints in deckbrew api syntax"
-
-# how to securely use pickle
-# to store the deckbrew data
-# TODO: print_curve needs to take a type and
-# do calculate_curve if it hasn't
-
 import argparse
 import re
 import matplotlib.pyplot as plt

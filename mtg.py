@@ -1,8 +1,4 @@
 #!/usr/bin/env python3
-# Includes phyrexian and colorless
-
-# TODO: sessions
-# http://docs.python-requests.org/en/master/user/advanced/
 
 # TODO nephilim
 # http://mtg.gamepedia.com/Nephilim
@@ -60,47 +56,47 @@ class Faction:
 
     # guilds include these colors
     gm = {
-            g[0]: {c[0], c[1]}, g[1]: {c[0], c[3]},
-            g[2]: {c[1], c[2]}, g[3]: {c[2], c[4]},
-            g[4]: {c[3], c[4]}, g[5]: {c[1], c[3]},
-            g[6]: {c[0], c[2]}, g[7]: {c[2], c[3]},
-            g[8]: {c[0], c[4]}, g[9]: {c[1], c[4]}
-          }
+        g[0]: {c[0], c[1]}, g[1]: {c[0], c[3]},
+        g[2]: {c[1], c[2]}, g[3]: {c[2], c[4]},
+        g[4]: {c[3], c[4]}, g[5]: {c[1], c[3]},
+        g[6]: {c[0], c[2]}, g[7]: {c[2], c[3]},
+        g[8]: {c[0], c[4]}, g[9]: {c[1], c[4]}
+        }
     # shards include these colors
     sm = {
-            s[0]: {c[0], c[1], c[4]},
-            s[1]: {c[0], c[3], c[4]},
-            s[2]: {c[1], c[2], c[3]},
-            s[3]: {c[0], c[1], c[2]},
-            s[4]: {c[2], c[3], c[4]}
-         }
+        s[0]: {c[0], c[1], c[4]},
+        s[1]: {c[0], c[3], c[4]},
+        s[2]: {c[1], c[2], c[3]},
+        s[3]: {c[0], c[1], c[2]},
+        s[4]: {c[2], c[3], c[4]}
+        }
 
     # wedges include these colors
     wm = {
-            w[0]: {c[0], c[2], c[4]},
-            w[1]: {c[0], c[1], c[3]},
-            w[2]: {c[0], c[2], c[3]},
-            w[3]: {c[1], c[2], c[4]},
-            w[4]: {c[1], c[3], c[4]}
-         }
+        w[0]: {c[0], c[2], c[4]},
+        w[1]: {c[0], c[1], c[3]},
+        w[2]: {c[0], c[2], c[3]},
+        w[3]: {c[1], c[2], c[4]},
+        w[4]: {c[1], c[3], c[4]}
+        }
 
     # shards include these guilds
     sgm = {
-            s[0]: {g[0], g[8], g[9]},
-            s[1]: {g[1], g[8], g[4]},
-            s[2]: {g[2], g[5], g[7]},
-            s[3]: {g[0], g[2], g[6]},
-            s[4]: {g[3], g[4], g[7]}
-          }
+        s[0]: {g[0], g[8], g[9]},
+        s[1]: {g[1], g[8], g[4]},
+        s[2]: {g[2], g[5], g[7]},
+        s[3]: {g[0], g[2], g[6]},
+        s[4]: {g[3], g[4], g[7]}
+        }
 
     # wedges include these guilds
     wgm = {
-            w[0]: {g[3], g[6], g[8]},
-            w[1]: {g[0], g[1], g[5]},
-            w[2]: {g[1], g[6], g[7]},
-            w[3]: {g[2], g[3], g[9]},
-            w[4]: {g[4], g[5], g[9]}
-          }
+        w[0]: {g[3], g[6], g[8]},
+        w[1]: {g[0], g[1], g[5]},
+        w[2]: {g[1], g[6], g[7]},
+        w[3]: {g[2], g[3], g[9]},
+        w[4]: {g[4], g[5], g[9]}
+        }
 
     # color shorthand
     csh = {'w': c[0], 'u': c[1], 'b': c[2], 'r': c[3], 'g': c[4]}
