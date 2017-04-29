@@ -10,15 +10,15 @@ import os.path
 
 
 class Cube():
+
+    # cubetutor CSV parser
     pt = re.compile(r'"(.+)","(.+)","(.+)","(.+)"')
 
     def __init__(self, fname, db_name):
         """Load card data and calculate creature curve"""
         self.curve = dict()
-        # database of card info
-        self.cards = mtg.Cards(db_name)
-        # list of cards in cube (length should be number of cards in cube)
-        self.contents = list()
+        self.contents = list()  # cards in cube (with repeats for multiples)
+        self.cards = mtg.Cards(db_name)  # card data
 
         atexit.register(self.cards.save)  # save the card data on exit
 
@@ -101,7 +101,6 @@ class Cube():
             f = mtg.Faction.who_can_play(self.cards.db[name]['cost'])
             if faction in f:
                 s += 1
-
         return s
 
     def count(self, card_type, faction):

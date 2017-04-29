@@ -19,6 +19,16 @@ def normtype(name):
     return name
 
 
+def colorname(name):
+    """Standardize color names from cubetutor output."""
+    name = name.lower()
+    if name.startswith('mono_'):
+        name = name[5:]
+    if name in 'wubrg':
+        name = Faction.csh[name]  # color shorthand (w,b,r,g,u)
+    return name
+
+
 def create_tests():
     """Create tests asserting the validity of current state."""
     print("import mtg\n")
@@ -47,10 +57,19 @@ class Faction:
     s = ['bant', 'naya', 'grixis', 'esper', 'jund']
     w = ['abzan', 'jeskai', 'mardu', 'sultai', 'temur']
 
-    # plot color
-    pc = {c[0]: 'gray', c[1]: 'blue', c[2]: 'black',
-          c[3]: 'red', c[4]: 'green'
-          }
+    # plot colors
+    pc = {
+        c[0]: 'gray', c[1]: 'blue', c[2]: 'black',
+        c[3]: 'red', c[4]: 'green',
+        g[0]: '#8080ff', g[1]: '#ff8080', g[2]: 'blue',
+        g[3]: 'green', g[4]: '#ffff00', g[5]: '#ff00ff',
+        g[6]: '#808080', g[7]: 'red', g[8]: '#80ff80',
+        g[9]: '#00ffff',
+        s[0]: '#80ffff', s[1]: '#ffff80', s[2]: '#ff00ff',
+        s[3]: '#8080ff', s[4]: '#ffff00',
+        w[0]: '#008000', w[1]: '#800080', w[2]: '#800000',
+        w[3]: '#00ffff', w[4]: 'gray'
+    }
 
     all_factions = frozenset(c + g + s + w)
 
@@ -108,17 +127,8 @@ class Faction:
         for k, v in Faction.gm.items():
             Faction.rgm[frozenset(v)] = k
 
-    def colorname(name):
-        """Standardize color names from cubetutor output."""
-        name = name.lower()
-        if name.startswith('mono_'):
-            name = name[5:]
-        if name in 'wubrg':
-            name = Faction.csh[name]
-        return name
-
     def colors(faction):
-        faction = Faction.colorname(faction)
+        faction = colorname(faction)
 
         if faction in Faction.g:
             r = Faction.gm[faction]
@@ -154,7 +164,7 @@ class Faction:
 
             # hybrid mana
             elif '/' in subcost:
-                hybrid_colors = set([Faction.colorname(h) for h in
+                hybrid_colors = set([colorname(h) for h in
                                      subcost.split('/')])
 
                 # who can pay this particular subcost?
@@ -168,13 +178,13 @@ class Faction:
             else:
                 # print("Who can play {}? Why, {} of course!"
                 # .format(subcost, Faction.member_of(subcost)))
-                subcost = Faction.colorname(subcost)
+                subcost = colorname(subcost)
                 can_play.intersection_update(Faction.member_of(subcost))
 
         return can_play
 
     def member_of(faction):
-        faction = Faction.colorname(faction)
+        faction = colorname(faction)
 
         # this color is a member of these shards
         m = {k for k, v in Faction.sm.items() if faction in v}
