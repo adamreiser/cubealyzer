@@ -16,7 +16,7 @@ output (columns besides the first are ignored).
 
 Uses [Scryfall](https://scryfall.com/docs/api/) to fetch card data. This data
 will be downloaded and stored in a JSON file with the same base name as the CSV
-file (e.g., my_modern_cube.json for my_modern_cube.csv.) This allows you
+file (e.g., my_modern_cube.json for my_modern_cube.csv.) This allows you to
 observe the result of incremental changes to a cube without unnecessary API
 queries. These JSON files can eventually grow rather unwieldy, so try deleting
 them if you're having problems. Note that the JSON file does not itself
