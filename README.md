@@ -52,7 +52,7 @@ optional arguments:
 
 Using [psyllogism's Modern Cube](http://www.cubetutor.com/viewcube/75206):
 
-```bash
+```
 $ python3  ./cubealyzer.py -cg --plot my_modern_cube.csv
 Total cards playable in:
 black       177
@@ -119,4 +119,4 @@ Current implementation uses only the first half.
 
 ## Notes
 
-The four color faction names are from Commander 2016. (See [Multicolored#Four_colors](https://mtg.gamepedia.com/index.php?title=Multicolored&oldid=279219#Four_colors))
+The four color faction (nephilim) names are from Commander 2016. (See [Multicolored#Four_colors](https://mtg.gamepedia.com/index.php?title=Multicolored&oldid=279219#Four_colors))
