@@ -52,6 +52,7 @@ optional arguments:
 
 Using [psyllogism's Modern Cube](http://www.cubetutor.com/viewcube/75206):
 
+```bash
 $ python3  ./cubealyzer.py -cg --plot my_modern_cube.csv
 Total cards playable in:
 black       177
@@ -104,6 +105,7 @@ orzhov      1:11 2:21 3:23 4:15 5: 8 6: 6 7: 3 8: 2 9: 0 10: 2 11: 0 12: 0 13: 1
 rakdos      1:11 2:22 3:15 4:16 5: 9 6: 6 7: 2 8: 1 9: 0 10: 3 11: 0 12: 0 13: 1
 selesnya    1:15 2:21 3:27 4:12 5: 8 6: 3 7: 5 8: 3 9: 0 10: 2 11: 0 12: 0 13: 1
 simic       1: 9 2:19 3:23 4:16 5: 6 6: 5 7: 5 8: 2 9: 0 10: 2 11: 0 12: 0 13: 1
+```
 
 ![Color curves example](images/color_curves_example.png)
 ![Guild curves example](images/guild_curves_example.png)
