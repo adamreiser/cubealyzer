@@ -188,9 +188,9 @@ class Faction:
 
     def member_of(faction):
         """Takes the name of a faction - a color, guild, shard, wedge, or
-        nephilim - and returns a set of names of the factions that it is a
-        member of. For example, white belongs to azorius, abzan, jeskai, and so
-        on.  This set will always include the faction in the argument."""
+        nephilim - and returns the set of names of the factions that it is a
+        member of, including itself. For example, white belongs to white,
+        azorius, abzan, jeskai, and so on."""
 
         faction = Faction.colorname(faction)
 
@@ -261,12 +261,12 @@ class Cards():
             self.path = None
 
     def add_card(self, name, api_url='https://api.scryfall.com'):
-        """Download card data by name from deckbrew and add it to the card
-        database. Since all we have is the name, just save the first result,
-        which should be representative for the card mechanics. Skips
-        downloading cards that are already in the database."""
+        """Download card data by name from Scryfall and add it to the card
+        database. For silver-bordered cards, this is not enough for unambiguous
+        identification. Skips downloading cards that are already in the
+        database."""
 
-        if name not in self.db.keys():
+        if name not in self.db:
             print("Fetching {}".format(name))
             query = "{}/cards/named?exact={}".format(api_url, name)
             time.sleep(self.rate_limit)
@@ -319,6 +319,9 @@ class Cards():
             else:
                 exit("Error communicating with API: status code {}".
                      format(r.status_code))
+
+    def get(self, name, default=dict()):
+        return self.db.get(name, default)
 
     def save(self):
         """Write the card database file."""

@@ -11,6 +11,7 @@ import logging
 from colorama import init, Fore, Back, Style
 
 from collections import Counter
+from operator import methodcaller
 
 
 init()
@@ -26,8 +27,6 @@ logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s\
 # Finish subtype curves to allow tribal balance analysis
 
 # Delete unused card info from JSON caches
-
-# Improve storage; shelve?
 
 # Possibly use a {name: count} dictionary instead of a list
 
@@ -53,48 +52,40 @@ class Cube():
 
         # Read cube CSV file into self.contents
         with open(csv_file) as cube_file:
-            for row in csv.reader(cube_file):
-                if len(row) > 0:
-                    name = row[0]
+            for name in [row[0] for row in csv.reader(cube_file) if row != list()]:
 
-                    # Download card data from public API
-                    self.cards.add_card(name)
+                # Download card data from public API
+                self.cards.add_card(name)
 
-                    # List of cards in the cube
-                    # Should be a dictionary of counts
-                    self.contents.append(name)
+                # List of cards in the cube
+                # Should be a dictionary of counts
+                self.contents.append(name)
 
     def conditional_curve(self, *conditions):
         """Return a curve dictionary ({cmc: count}) for cards matching the
-        given list of conditions."""
+        given list of condition functions."""
 
-        curve = {}
+        curve = Counter()
 
         # The highest cmc appearing in a cost
-        max_cmc = int(max([self.cards.db.get(name).get('cmc', 0) for name in
+        max_cmc = int(max([self.cards.get(name).get('cmc', 0) for name in
                            self.contents]))
 
         max_cmc = min(max_cmc, self.MAX_CMC)
 
         for cmc in range(1, max_cmc + 1):
 
-            num = 0
-            cards = ((name, self.cards.db.get(name)) for name in self.contents)
+            cmc_cards = ((self.cards.get(name)) for
+                         name in self.contents if
+                         self.cards.get(name).get('cmc') == cmc)
 
-            for name, card in cards:
-                result = card.get('cmc') == cmc
-                if result is False:
-                    next
-                for condition in conditions:
-                    result = condition(card) and result
-                if result is True:
-                    num += 1
-
-                curve[cmc] = num
+            for card in cmc_cards:
+                if all(condition(card) for condition in conditions):
+                    curve[cmc] += 1
 
         return curve
 
-    def faction_curve(self, faction, curve_type='creature', sub_type=None):
+    def faction_curve(self, faction, curve_type, sub_type=None):
         """Returns a curve dictionary ({cmc: count}) of creatures (or other
         permanent type) playable with only mana of a particular faction's
         colors (a single color, guild, shard, wedge, or nephilim name). If None
@@ -108,12 +99,12 @@ class Cube():
             # True if the card object is the specified type
             condition_list.append(lambda card: curve_type in card.get('types'))
 
-        # Otherwise any permanent
+        # Otherwise any non-land permanent
         else:
             def is_permanent(card):
-                return set() != set(card.get('types')).intersection(
-                    {'creature', 'enchantment', 'land', 'artifact',
-                     'planeswalker'})
+
+                return any(t in {'creature', 'enchantment', 'artifact',
+                          'planeswalker'} for t in card.get('types'))
 
             condition_list.append(is_permanent)
 
@@ -137,7 +128,7 @@ class Cube():
         cube.cards_matching_conditions(lambda c: c.get('cmc') == 1, lambda
         c: 'creature' in c.get('types'), lambda c: 'black' in
         mtg.Faction.who_can_play(c.get('cost')))"""
-        cards = ((name, self.cards.db.get(name)) for name in self.contents)
+        cards = ((name, self.cards.get(name)) for name in self.contents)
 
         results = list()
         for name, card in cards:
@@ -177,7 +168,7 @@ class Cube():
     def plot_curve(self, faction, curve_type='creature'):
         """Plot the curve for the given faction name and type."""
 
-        d = thecube.curve[curve_type]
+        d = self.curve[curve_type]
         x = [k for k, v in sorted(d.get(faction, {}).items())]
         y = [v for k, v in sorted(d.get(faction, {}).items())]
 
@@ -197,7 +188,7 @@ class Cube():
     def card_count(self, faction):
         s = 0
         for name in self.contents:
-            f = mtg.Faction.who_can_play(self.cards.db[name]['cost'])
+            f = mtg.Faction.who_can_play(self.cards.get(name)['cost'])
             if faction in f:
                 s += 1
         return s
