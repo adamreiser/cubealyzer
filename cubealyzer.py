@@ -33,10 +33,6 @@ logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s\
 
 class Cube():
 
-    # Hard limit on CMC used to calculate/display curve to prevent issues with
-    # cards like Gleemax.
-    MAX_CMC = 15
-
     def __init__(self, csv_file, json_file):
         """Loads cube data from CSV file. Saves card data to JSON file."""
         self.curve = dict()
@@ -67,21 +63,9 @@ class Cube():
 
         curve = Counter()
 
-        # The highest cmc appearing in a cost
-        max_cmc = int(max([self.cards.get(name).get('cmc', 0) for name in
-                           self.contents]))
-
-        max_cmc = min(max_cmc, self.MAX_CMC)
-
-        for cmc in range(1, max_cmc + 1):
-
-            cmc_cards = ((self.cards.get(name)) for
-                         name in self.contents if
-                         self.cards.get(name).get('cmc') == cmc)
-
-            for card in cmc_cards:
-                if all(condition(card) for condition in conditions):
-                    curve[cmc] += 1
+        for card in (self.cards.get(name) for name in self.contents):
+            if all(condition(card) for condition in conditions):
+                curve[card.get('cmc', 0)] += 1
 
         return curve
 
@@ -99,13 +83,11 @@ class Cube():
             # True if the card object is the specified type
             condition_list.append(lambda card: curve_type in card.get('types'))
 
-        # Otherwise any non-land permanent
+        # Otherwise any nonland permanent
         else:
             def is_permanent(card):
-
                 return any(t in {'creature', 'enchantment', 'artifact',
                           'planeswalker'} for t in card.get('types'))
-
             condition_list.append(is_permanent)
 
         if sub_type is not None:
@@ -149,8 +131,8 @@ class Cube():
                                    sub_type=sub_type)
 
     def print_curve(self, faction_list, curve_type='creature'):
-        """Displays the curve for a type"""
-        if curve_type not in self.curve.keys():
+        """Displays the curve for a type."""
+        if curve_type not in self.curve:
             self.calculate_curve(curve_type=curve_type)
 
         print("{}Cards of type {} at each cost in:{}".format(Style.BRIGHT,
@@ -161,7 +143,7 @@ class Cube():
             if faction in faction_list:
                 print(faction.ljust(12), end='')
                 for mana, num in sorted(curve.items()):
-                    print("{}{}{}:{:2} ".format(Style.BRIGHT, mana,
+                    print("{}{:.0f}{}:{:2} ".format(Style.BRIGHT, mana,
                                                 Style.RESET_ALL, num), end='')
                 print()
 
@@ -173,7 +155,7 @@ class Cube():
         y = [v for k, v in sorted(d.get(faction, {}).items())]
 
         # Plot colors
-        if faction in mtg.Faction.pc.keys():
+        if faction in mtg.Faction.pc:
             plt.plot(x, y, color=mtg.Faction.pc[faction], label=faction)
         else:
             plt.plot(x, y, label=faction)
@@ -196,7 +178,7 @@ class Cube():
     def count(self, card_type, faction):
         """Returns a dictionary of the number of..."""
 
-        if card_type not in self.curve.keys():
+        if card_type not in self.curve:
             self.calculate_curve(curve_type='creature')
 
         return sum(self.curve.get(card_type, dict()).

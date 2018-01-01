@@ -285,6 +285,7 @@ class Cards():
                 # Compatibility with previous Deckbrew format
                 self.db[name]['cost'] = self.db[name]['mana_cost']
 
+                # Parse typeline
                 typeline = self.db[name]['type_line'].lower()
 
                 # Parse card type into types (including supertype) and creature type
@@ -312,7 +313,7 @@ class Cards():
                 time.sleep(2)
                 self.add_card(name)
 
-            # otherwise fail
+            # Otherwise fail
             elif r.status_code == 404:
                 exit("Card {} not found in API!".format(name))
 
@@ -328,18 +329,3 @@ class Cards():
         if self.path:
             with open(self.path, 'w') as db_file:
                 db_file.write(json.dumps(self.db))
-
-    def show_guild_numbers():
-        """Debugging function"""
-        for c in range(0, 10):
-            print("{} {}".format(c, Faction.g[c]))
-
-    # there isn't really a point of looking up cards against the info database.
-    # you'd actually want to look up cards against the cube contents.
-
-    def condition_match(self, condition, **kwargs):
-        """Returns the set of card names in the database that match a condition
-        function.  Example: print(cdb.condition_match(lambda c: 'treefolk' in
-        c.get('subtypes', []))).  """
-
-        return {n for n, c in self.db.items() if condition(c, **kwargs)}
