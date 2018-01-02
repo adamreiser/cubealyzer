@@ -22,14 +22,13 @@ def create_tests():
           format(Faction.all_factions))
 
 
-def show_guild_numbers():
-    """Debugging function"""
-    for c in range(0, 10):
-        print("{} {}".format(c, Faction.g[c]))
-
-
 class Faction:
     """Not intended to be instantiated."""
+
+    def get_factions(faction_type):
+        """Returns the list of factions (e.g., Rakdos) given the shorthand for
+        a faction type (e.g., g for guild)"""
+        return Faction.__dict__.get(faction_type)
 
     # faction lists (not sets! order is used later)
     c = ['white', 'blue', 'black',  'red', 'green']
@@ -48,8 +47,8 @@ class Faction:
         g[3]: 'green'  , g[4]: '#ffff00', g[5]: '#ff00ff',
         g[6]: '#808080', g[7]: 'red'    , g[8]: '#80ff80',
         g[9]: '#00ffff',
-        s[0]: '#80ffff', s[1]: '#ffff80', s[2]: '#ff00ff',
-        s[3]: '#8080ff', s[4]: '#ffff00',
+        s[0]: '#80ffff', s[1]: 'yellow', s[2]: '#ff00ff',
+        s[3]: '#8080ff', s[4]: 'black',
         w[0]: '#008000', w[1]: '#800080', w[2]: '#800000',
         w[3]: '#00ffff', w[4]: 'gray',
         n[0]: '#ffff00', n[1]: '#000000', n[2]: '#ffff00',
@@ -138,15 +137,11 @@ class Faction:
         n[4]: {w[1], w[2]}
     }
 
-    # color shorthand
+    # color name shorthand
     csh = {'w': c[0], 'u': c[1], 'b': c[2], 'r': c[3], 'g': c[4]}
-
-    # we don't need this
-    def reverse_guild_map():
-        """Generates the reverse guild map"""
-        Faction.rgm = dict()
-        for k, v in Faction.gm.items():
-            Faction.rgm[frozenset(v)] = k
+    # faction type shorthand
+    fsh = {'c': 'color', 'g': 'guild', 's': 'shard', 'w': 'wedge', 'n':
+           'nephilim'}
 
     @functools.lru_cache(maxsize=200)
     def who_can_play(cost):

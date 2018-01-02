@@ -2,16 +2,18 @@
 
 A curve analysis tool for Magic: the Gathering cubes.
 
-Mana curves are considered for each "faction" (color, guild, shard, wedge, and
-nephilim), and are calculated based on the number of creatures (or other
-permanents) available to a hypothetical deck with access to mana of only the
-corresponding colors. Further analysis based on other card properties, such as
-tribe, is supported but unimplemented.
+![Shard curves example](images/shard_curves_example.png)
 
-A cube file should be provided as input via the positional argument. This
+Mana curves are calculated for each color and combination of colors (guild,
+shard, etc.) based on the number of creatures castable with only that mana.
+This should be enough to get a general sense of the color balance for most
+cubes, although some cards will not be counted (e.g., spells that make tokens
+or creatures with alternative casting costs).
+
+A cube file must be provided via the positional argument. This
 should contain the cards appearing in the cube, one per line. If there are
 multiple copies of a card, that line should be repeated. This format was chosen
-because it is compatible with the [cubetutor](https://www.cubetutor.com/) CSV
+because it is compatible with [cubetutor](https://www.cubetutor.com/) CSV
 output (columns after the first are ignored).
 
 Uses [Scryfall](https://scryfall.com/docs/api/) to fetch card data. This data
@@ -19,8 +21,7 @@ will be downloaded and stored in a JSON file with the same base name as the CSV
 file (e.g., my_modern_cube.json for my_modern_cube.csv.) This allows you to
 observe the result of incremental changes to a cube without unnecessary API
 queries. These JSON files can eventually grow rather unwieldy, so try deleting
-them if you're having problems. Note that the JSON file does not itself
-represent the cube.
+them if you're having problems.
 
 ## Usage
 ```
