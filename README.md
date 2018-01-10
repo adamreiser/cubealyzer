@@ -16,12 +16,13 @@ multiple copies of a card, that line should be repeated. This format was chosen
 because it is compatible with [cubetutor](https://www.cubetutor.com/) CSV
 output (columns after the first are ignored).
 
-Uses [Scryfall](https://scryfall.com/docs/api/) to fetch card data. This data
-will be downloaded and stored in a JSON file with the same base name as the CSV
-file (e.g., my_modern_cube.json for my_modern_cube.csv.) This allows you to
-observe the result of incremental changes to a cube without unnecessary API
-queries. These JSON files can eventually grow rather unwieldy, so try deleting
-them if you're having problems.
+Uses card data from the [Scryfall API](https://scryfall.com/docs/api/).
+
+This data will be downloaded and stored in a JSON file with the same base name
+as the CSV file (e.g., my_modern_cube.json for my_modern_cube.csv.) This allows
+you to observe the result of incremental changes to a cube without unnecessary
+API queries. These JSON files can grow rather unwieldy, so try deleting them if
+you're having problems.
 
 ## Usage
 ```

@@ -3,10 +3,10 @@
 import re
 import os
 import json
-import requests
 import time
 import functools
 import logging
+import requests
 
 
 def create_tests():
@@ -156,8 +156,8 @@ class Faction:
             if subcost == 'C':
                 can_play = set()
 
-            elif re.search('\d+|P|X', subcost) is not None:
-                # print("Anyone can pay this subcost, moving on")
+            elif re.search(r'\d+|P|X', subcost) is not None:
+                logging.debug("Anyone can pay this subcost, moving on")
                 continue
 
             # hybrid mana
@@ -174,8 +174,9 @@ class Faction:
 
             # Single color
             else:
-                #print("Who can play {}? Why, {} of course!"
-                # .format(subcost, Faction.member_of(subcost)))
+                logging.debug("Who can play {}? Why, {} of course!"
+                              .format(subcost,
+                              Faction.member_of(subcost)))
                 subcost = Faction.colorname(subcost)
                 can_play.intersection_update(Faction.member_of(subcost))
 
@@ -262,7 +263,7 @@ class Cards():
         database."""
 
         if name not in self.db:
-            print("Fetching {}".format(name))
+            logging.info("Fetching {}".format(name))
             query = "{}/cards/named?exact={}".format(api_url, name)
             time.sleep(self.rate_limit)
             r = requests.get(query)
@@ -303,7 +304,7 @@ class Cards():
 
             # Too many requests: wait, decrease rate, try again
             elif r.status_code == 429:
-                logging.warn("Rate limit exceeded, throttling...")
+                logging.warning("Rate limit exceeded, throttling...")
                 self.rate_limit += .1
                 time.sleep(2)
                 self.add_card(name)
@@ -316,7 +317,7 @@ class Cards():
                 exit("Error communicating with API: status code {}".
                      format(r.status_code))
 
-    def get(self, name, default=dict()):
+    def get(self, name, default=None):
         return self.db.get(name, default)
 
     def save(self):
