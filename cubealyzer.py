@@ -106,27 +106,24 @@ class Cube():
 
         return results
 
-    def create_curve(self, faction_type, card_type='creature', sub_type=None):
-        """Returns a curve dictionary of cards with a particular type and
+    def update_curve(self, faction_type, card_type='creature', sub_type=None):
+        """Updates the curve dictionary of cards with a particular type and
         optional subtype, broken down by the faction type given - 'c' colors,
         's' shards, 'w' wedges, and 'n' nephilim (four color combinations.)"""
 
-        mycurve = dict()
-        mycurve[card_type] = dict()
-        mycurve[card_type][sub_type] = dict()
-        mycurve[card_type][sub_type][faction_type] = dict()
+        self.curve.update({card_type: {sub_type: {faction_type: {}}}})
+
         for faction in mtg.Faction.get_factions(faction_type):
-            mycurve[card_type][sub_type][faction_type][faction] =\
+            self.curve[card_type][sub_type][faction_type][faction] =\
                 self.faction_curve(faction,
                                    card_type=card_type,
                                    sub_type=sub_type)
-        return mycurve
 
     def print_curve(self, faction_type, card_type='creature', sub_type=None):
         """Displays the curves for a faction type. Requires calculating curves
         for all the factions of that type."""
 
-        self.curve.update(self.create_curve(faction_type, card_type, sub_type))
+        self.update_curve(faction_type, card_type, sub_type)
 
         print("{}Cards of type {} at each cost in:{}".format(Style.BRIGHT,
                                                              card_type,
@@ -140,7 +137,7 @@ class Cube():
             print()
 
     def plot_curve(self, faction_type, faction, card_type='creature', sub_type=None):
-        """Plot the curve for the given faction name and type."""
+        """Plot the curve for the given parameters."""
 
         d = self.curve[card_type][sub_type][faction_type][faction].items()
 
@@ -156,10 +153,8 @@ class Cube():
     def show_curve_plots(self, faction_type, card_type='creature', sub_type=None):
         """Display graphical plots of the desired curves."""
 
-        faction_list = mtg.Faction.get_factions(faction_type)
-
-        for f in faction_list:
-            self.plot_curve(faction_type, f, card_type, sub_type)
+        for faction in mtg.Faction.get_factions(faction_type):
+            self.plot_curve(faction_type, faction, card_type, sub_type)
         plt.title("{} mana curves ({}) for "
                   "{}".format(mtg.Faction.fsh[faction_type], card_type,
                               self.csv_file))
@@ -221,24 +216,24 @@ if __name__ == '__main__':
                         help='The card subtype \
                         to calculate curves for (default: none)')
 
-    parser.add_argument('-c', dest='faction_type', const='c',
-                        action='append_const', help='Calculate \
+    parser.add_argument('-c', dest='faction_types', const='c',
+                        action='append_const', default=[], help='Calculate \
                         curves for colors')
 
-    parser.add_argument('-g', dest='faction_type', const='g',
-                        action='append_const', help='Calculate \
+    parser.add_argument('-g', dest='faction_types', const='g',
+                        action='append_const', default=[], help='Calculate \
                         curves for guilds')
 
-    parser.add_argument('-s', dest='faction_type', const='s',
-                        action='append_const', help='Calculate \
+    parser.add_argument('-s', dest='faction_types', const='s',
+                        action='append_const', default=[], help='Calculate \
                         curves for shards')
 
-    parser.add_argument('-w', dest='faction_type', const='w',
-                        action='append_const', help='Calculate \
+    parser.add_argument('-w', dest='faction_types', const='w',
+                        action='append_const', default=[], help='Calculate \
                         curves for wedges')
 
-    parser.add_argument('-n', dest='faction_type', const='n',
-                        action='append_const', help='Calculate \
+    parser.add_argument('-n', dest='faction_types', const='n',
+                        action='append_const', default=[], help='Calculate \
                         curves for nephilim')
 
     parser.add_argument('--plot', action='store_true',
@@ -247,10 +242,18 @@ if __name__ == '__main__':
     parser.add_argument('--test', action='store_true',
                         help='Generate tests')
 
-    parser.add_argument('--debug', action='store_true',
+    parser.add_argument('-d', '--debug', action='store_const', dest="loglevel",
+                        const=logging.DEBUG, default=logging.WARNING,
                         help='Generate debug messages')
 
+    parser.add_argument('-v', '--verbose', action='store_const', dest="loglevel",
+                        const=logging.INFO, default=logging.WARNING,
+                        help='Generate verbose (but not debug) messages')
+
     args = parser.parse_args()
+
+    logger = logging.getLogger()
+    logging.basicConfig(level=args.loglevel, format='%(asctime)s - %(levelname)s - %(message)s')
 
     # colorama
     init()
@@ -258,21 +261,13 @@ if __name__ == '__main__':
     thecube = Cube(args.cubefile, "{}.json".
                    format(os.path.splitext(args.cubefile)[0]))
 
-    logger = logging.getLogger()
-    logging.basicConfig(level=logging.WARNING, format='%(asctime)s - %(levelname)s - %(message)s')
-
-    if args.debug:
-        logger.setLevel(logging.DEBUG)
-
     if args.test:
         mtg.create_tests()
 
-    if args.faction_type:
-        # any of "cgswn"
-        for faction_type in args.faction_type:
-            thecube.show_card_counts(faction_type)
-            thecube.show_type_counts(faction_type, args.t)
-            thecube.print_curve(faction_type, card_type=args.t, sub_type=args.subtype)
+    for faction_type in args.faction_types:
+        thecube.show_card_counts(faction_type)
+        thecube.show_type_counts(faction_type, args.t)
+        thecube.print_curve(faction_type, card_type=args.t, sub_type=args.subtype)
 
-            if args.plot:
-                thecube.show_curve_plots(faction_type, card_type=args.t)
+        if args.plot:
+            thecube.show_curve_plots(faction_type, card_type=args.t)
