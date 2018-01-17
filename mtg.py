@@ -157,7 +157,7 @@ class Faction:
                 can_play = set()
 
             elif re.search(r'\d+|P|X', subcost) is not None:
-                logging.debug("Anyone can pay this subcost, moving on")
+                logging.debug("Anyone can pay this subcost, continuing")
                 continue
 
             # hybrid mana
@@ -166,15 +166,15 @@ class Faction:
                                      subcost.split('/')])
 
                 # who can pay this particular subcost?
-                sub_sub_cost = set()
+                can_pay_hybrid = set()
                 for color in hybrid_colors:
-                    sub_sub_cost.update(Faction.member_of(color))
+                    can_pay_hybrid.update(Faction.member_of(color))
 
-                can_play.intersection_update(sub_sub_cost)
+                can_play.intersection_update(can_pay_hybrid)
 
             # Single color
             else:
-                logging.debug("Who can play {}? Why, {} of course!"
+                logging.debug("Subcost {} payable by {}"
                               .format(subcost,
                               Faction.member_of(subcost)))
                 subcost = Faction.colorname(subcost)

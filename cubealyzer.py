@@ -10,20 +10,17 @@ from colorama import init, Style
 import matplotlib.pyplot as plt
 import mtg
 # import mtgtests
-# TODO
-#
-# Should recognize that lands are playable in any color (Dryad Arbor)
 
-# Finish subtype code
+# TODO
+# Account for changelings in subtypes (or not)
 
 # Delete unused card info from JSON caches
 
 # colorama init() (only called in __main__)
 
-# Cube.get(name)
-
 
 class Cube():
+    """Calculate statistics and mana curves for a cube file."""
 
     def __init__(self, csv_file, json_file):
         """Loads cube data from CSV file. Saves card data to JSON file."""
@@ -31,10 +28,10 @@ class Cube():
         # factiontype[faction][type][subtype]
         self.curve = dict()
 
-        # name: num cards in cube
+        # The actual contents of the cube by { name : count }
         self.contents = Counter()
 
-        # Card info
+        # Load card info
         self.cards = mtg.Cards(json_file)
 
         # Save downloaded card data as a JSON file on exit
@@ -49,6 +46,7 @@ class Cube():
                          len(row) > 0]:
 
                 # Download any uncached card data from public API
+                logging.info("Adding {}".format(name))
                 self.cards.add_card(name)
 
                 self.contents[name] += 1
@@ -125,9 +123,14 @@ class Cube():
 
         self.update_curve(faction_type, card_type, sub_type)
 
-        print("{}Cards of type {} at each cost in:{}".format(Style.BRIGHT,
-                                                             card_type,
-                                                             Style.RESET_ALL))
+        subtype_string = ''
+        if sub_type is not None:
+            subtype_string = " ({})".format(sub_type)
+
+        print("{}Cards of type {}{} at each cost in:{}".format(Style.BRIGHT,
+                                                               card_type,
+                                                               subtype_string,
+                                                               Style.RESET_ALL))
 
         for faction in sorted(self.curve[card_type][sub_type][faction_type]):
             print(faction.ljust(12), end='')
@@ -153,11 +156,16 @@ class Cube():
     def show_curve_plots(self, faction_type, card_type='creature', sub_type=None):
         """Display graphical plots of the desired curves."""
 
+        subtype_string = ''
+
+        if sub_type is not None:
+            subtype_string = ", {}".format(sub_type)
+
         for faction in mtg.Faction.get_factions(faction_type):
             self.plot_curve(faction_type, faction, card_type, sub_type)
-        plt.title("{} mana curves ({}) for "
+        plt.title("{} mana curves ({}{}) for "
                   "{}".format(mtg.Faction.fsh[faction_type], card_type,
-                              self.csv_file))
+                              subtype_string, self.csv_file))
         plt.legend()
         plt.show()
 
@@ -168,22 +176,29 @@ class Cube():
 
         return sum(self.cards_matching_conditions(*conditions).values())
 
-    def show_type_counts(self, faction_type, card_type='creature'):
+    def show_type_counts(self, faction_type, card_type='creature', sub_type=None):
         """Display cards of a particular type broken down by playability in
         factions - 'c' colors, 's' shards, 'w' wedges, and 'n' nephilim (four
         color combinations.)"""
 
+        subtype_string = ''
+        if sub_type is not None:
+            subtype_string = " ({})".format(sub_type)
+
         faction_list = mtg.Faction.get_factions(faction_type)
-        print("{}Cards of type {} playable per {} in:{}".format(Style.BRIGHT,
-                                                                card_type,
-                                                                mtg.Faction.fsh[faction_type],
-                                                                Style.RESET_ALL))
+        print("{}Cards of type {}{} per {} in:{}".format(Style.BRIGHT,
+                                                                  card_type,
+                                                                  subtype_string,
+                                                                  mtg.Faction.fsh[faction_type],
+                                                                  Style.RESET_ALL))
 
         for faction in sorted(faction_list):
             cd = self.conditional_curve(lambda card: card_type in
                                         card['types'], lambda card: faction in
                                         mtg.Faction.
-                                        who_can_play(card.get('cost')))
+                                        who_can_play(card.get('cost')), lambda
+                                        card: sub_type is None or sub_type in
+                                        card.get('subtypes'))
 
             print("{:12}{}".format(faction, sum(cd.values())))
 
@@ -193,7 +208,7 @@ class Cube():
         nephilim (four color combinations.)"""
 
         faction_list = mtg.Faction.get_factions(faction_type)
-        print("{}Total cards playable in:{}".format(Style.BRIGHT,
+        print("{}Total cards in:{}".format(Style.BRIGHT,
                                                     Style.RESET_ALL))
         for f in sorted(faction_list):
             print("{:12}{}".format(f, self.card_count(f)))
@@ -242,13 +257,14 @@ if __name__ == '__main__':
     parser.add_argument('--test', action='store_true',
                         help='Generate tests')
 
-    parser.add_argument('-d', '--debug', action='store_const', dest="loglevel",
-                        const=logging.DEBUG, default=logging.WARNING,
-                        help='Generate debug messages')
-
     parser.add_argument('-v', '--verbose', action='store_const', dest="loglevel",
                         const=logging.INFO, default=logging.WARNING,
-                        help='Generate verbose (but not debug) messages')
+                        help='Generate verbose output')
+
+    parser.add_argument('-vv', '--debug', action='store_const', dest="loglevel",
+                        const=logging.DEBUG, default=logging.WARNING,
+                        help='Generate debug messages (and also verbose output)')
+
 
     args = parser.parse_args()
 
@@ -266,8 +282,8 @@ if __name__ == '__main__':
 
     for faction_type in args.faction_types:
         thecube.show_card_counts(faction_type)
-        thecube.show_type_counts(faction_type, args.t)
+        thecube.show_type_counts(faction_type, args.t, sub_type=args.subtype)
         thecube.print_curve(faction_type, card_type=args.t, sub_type=args.subtype)
 
         if args.plot:
-            thecube.show_curve_plots(faction_type, card_type=args.t)
+            thecube.show_curve_plots(faction_type, card_type=args.t, sub_type=args.subtype)
