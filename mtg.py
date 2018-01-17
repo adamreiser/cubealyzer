@@ -263,7 +263,7 @@ class Cards():
         database."""
 
         if name not in self.db:
-            logging.info("Fetching {}".format(name))
+            logging.warning("Fetching {}".format(name))
             query = "{}/cards/named?exact={}".format(api_url, name)
             time.sleep(self.rate_limit)
             r = requests.get(query)
