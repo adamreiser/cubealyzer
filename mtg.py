@@ -174,9 +174,9 @@ class Faction:
 
             # Single color
             else:
-                logging.debug("Subcost {} payable by {}"
-                              .format(subcost,
-                              Faction.member_of(subcost)))
+                logging.debug("Subcost {} payable by {}".format(
+                    subcost, Faction.member_of(subcost)))
+
                 subcost = Faction.colorname(subcost)
                 can_play.intersection_update(Faction.member_of(subcost))
 
@@ -276,7 +276,10 @@ class Cards():
                 # is 'split', this doesn't make sense.
 
                 if 'card_faces' in self.db[name]:
+                    # Use the global cmc; other card details from front face
+                    cmc = self.db[name].get('cmc', 0)
                     self.db[name] = self.db[name]['card_faces'][0]
+                    self.db[name]['cmc'] = cmc
 
                 # Compatibility with previous Deckbrew format
                 self.db[name]['cost'] = self.db[name]['mana_cost']

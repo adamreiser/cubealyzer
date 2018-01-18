@@ -27,7 +27,7 @@ you're having problems.
 ## Usage
 ```
 usage: cubealyzer.py [-h] [-t [type]] [--subtype [subtype]] [-c] [-g] [-s]
-                     [-w] [-n] [--plot] [--test]
+                     [-w] [-n] [--plot] [--test] [-v] [-vv]
                      [FILE]
 
 Curve analysis tool for Magic: the Gathering cubes.
@@ -48,6 +48,8 @@ optional arguments:
   -n                   Calculate curves for nephilim
   --plot               Display plots of generated curves
   --test               Generate tests
+  -v, --verbose        Generate verbose output
+  -vv, --debug         Generate debug messages (and also verbose output)
 ```
 
 ## Example
@@ -56,57 +58,57 @@ Using [psyllogism's Modern Cube](http://www.cubetutor.com/viewcube/75206):
 
 ```
 $ ./cubealyzer.py -cg --plot my_modern_cube.csv
-Total cards playable in:
-black       177
+Total cards in:
+black       176
 blue        171
 green       181
 red         178
-white       174
-Cards of type creature playable in:
-black       55
+white       175
+Cards of type creature per color in:
+black       54
 blue        47
 green       60
-red         53
+red         52
 white       58
 Cards of type creature at each cost in:
-black       0: 2 1: 3 2:13 3:11 4:11 5: 4 6: 5 7: 2 8: 1 10: 2 13: 1
-blue        0: 2 1: 1 2: 9 3:12 4:10 5: 3 6: 4 7: 2 8: 1 10: 2 13: 1
-green       0: 2 1: 8 2:12 3:16 4: 8 5: 3 6: 2 7: 4 8: 2 10: 2 13: 1
-red         0: 2 1: 9 2:12 3: 8 4: 8 5: 5 6: 2 7: 2 8: 1 10: 3 13: 1
-white       0: 2 1: 8 2:11 3:16 4: 7 5: 4 6: 2 7: 3 8: 2 10: 2 13: 1
-Total cards playable in:
-azorius     235
-boros       240
-dimir       234
-golgari     247
+black       0: 2 1: 3 2:11 3:11 4:11 5: 4 6: 6 7: 1 8: 2 10: 2 13: 1
+blue        0: 2 1: 1 2: 9 3:12 4:10 5: 3 6: 5 7: 1 8: 1 10: 2 13: 1
+green       0: 2 1: 8 2:12 3:16 4: 8 5: 3 6: 3 7: 3 8: 2 10: 2 13: 1
+red         0: 2 1: 9 2:12 3: 7 4: 8 5: 5 6: 3 7: 1 8: 1 10: 3 13: 1
+white       0: 2 1: 8 2:11 3:16 4: 7 5: 4 6: 3 7: 2 8: 2 10: 2 13: 1
+Total cards in:
+azorius     236
+boros       241
+dimir       233
+golgari     246
 gruul       246
 izzet       238
 orzhov      239
-rakdos      241
-selesnya    241
+rakdos      240
+selesnya    242
 simic       240
-Cards of type creature playable in:
+Cards of type creature per guild in:
 azorius     88
-boros       91
-dimir       82
-golgari     97
-gruul       94
-izzet       81
-orzhov      94
-rakdos      88
+boros       90
+dimir       81
+golgari     96
+gruul       93
+izzet       80
+orzhov      93
+rakdos      86
 selesnya    99
 simic       90
 Cards of type creature at each cost in:
-azorius     0: 2 1: 9 2:17 3:26 4:14 5: 7 6: 5 7: 3 8: 2 10: 2 13: 1
-boros       0: 2 1:16 2:20 3:20 4:12 5: 9 6: 3 7: 3 8: 2 10: 3 13: 1
-dimir       0: 2 1: 4 2:19 3:18 4:18 5: 7 6: 8 7: 2 8: 1 10: 2 13: 1
-golgari     0: 2 1:11 2:22 3:24 4:16 5: 7 6: 6 7: 4 8: 2 10: 2 13: 1
-gruul       0: 2 1:17 2:20 3:20 4:13 5: 8 6: 3 7: 5 8: 2 10: 3 13: 1
-izzet       0: 2 1:10 2:18 3:16 4:15 5: 8 6: 5 7: 2 8: 1 10: 3 13: 1
-orzhov      0: 2 1:11 2:21 3:23 4:15 5: 8 6: 6 7: 3 8: 2 10: 2 13: 1
-rakdos      0: 2 1:11 2:22 3:15 4:16 5: 9 6: 6 7: 2 8: 1 10: 3 13: 1
-selesnya    0: 2 1:15 2:21 3:27 4:12 5: 8 6: 3 7: 5 8: 3 10: 2 13: 1
-simic       0: 2 1: 9 2:19 3:23 4:16 5: 6 6: 5 7: 5 8: 2 10: 2 13: 1
+azorius     0: 2 1: 9 2:17 3:26 4:14 5: 7 6: 6 7: 2 8: 2 10: 2 13: 1
+boros       0: 2 1:16 2:20 3:19 4:12 5: 9 6: 4 7: 2 8: 2 10: 3 13: 1
+dimir       0: 2 1: 4 2:17 3:18 4:18 5: 7 6: 9 7: 1 8: 2 10: 2 13: 1
+golgari     0: 2 1:11 2:20 3:24 4:16 5: 7 6: 7 7: 3 8: 3 10: 2 13: 1
+gruul       0: 2 1:17 2:20 3:19 4:13 5: 8 6: 4 7: 4 8: 2 10: 3 13: 1
+izzet       0: 2 1:10 2:18 3:15 4:15 5: 8 6: 6 7: 1 8: 1 10: 3 13: 1
+orzhov      0: 2 1:11 2:19 3:23 4:15 5: 8 6: 7 7: 2 8: 3 10: 2 13: 1
+rakdos      0: 2 1:11 2:20 3:14 4:16 5: 9 6: 7 7: 1 8: 2 10: 3 13: 1
+selesnya    0: 2 1:15 2:21 3:27 4:12 5: 8 6: 4 7: 4 8: 3 10: 2 13: 1
+simic       0: 2 1: 9 2:19 3:23 4:16 5: 6 6: 6 7: 4 8: 2 10: 2 13: 1
 ```
 
 ![Color curves example](images/color_curves_example.png)
