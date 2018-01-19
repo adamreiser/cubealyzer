@@ -174,8 +174,8 @@ class Faction:
 
             # Single color
             else:
-                logging.debug("Subcost {} payable by {}".format(
-                    subcost, Faction.member_of(subcost)))
+                logging.debug("Subcost %s payable by %s", subcost,
+                              Faction.member_of(subcost))
 
                 subcost = Faction.colorname(subcost)
                 can_play.intersection_update(Faction.member_of(subcost))
@@ -263,7 +263,7 @@ class Cards():
         database."""
 
         if name not in self.db:
-            logging.warning("Fetching {}".format(name))
+            print("Fetching {}".format(name))
             query = "{}/cards/named?exact={}".format(api_url, name)
             time.sleep(self.rate_limit)
             r = requests.get(query)
@@ -300,10 +300,11 @@ class Cards():
                     self.db[name]['types'] = typeline.split(' ')
                     self.db[name]['subtypes'] = list()
 
-                logging.debug("{}\n\tCost: {}\n\t{}\n\t{} {}".format(
-                    name, self.db[name]['cost'],
-                    Faction.who_can_play(self.db[name]['cost']),
-                    self.db[name]['types'], self.db[name]['subtypes']))
+                logging.debug("%s\n\tCost: %s\n\t%s\n\t%s %s", name,
+                              self.db[name]['cost'],
+                              Faction.who_can_play(self.db[name]['cost']),
+                              self.db[name]['types'],
+                              self.db[name]['subtypes'])
 
             # Too many requests: wait, decrease rate, try again
             elif r.status_code == 429:

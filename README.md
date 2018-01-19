@@ -10,11 +10,11 @@ This should be enough to get a general sense of the color balance for most
 cubes, although some cards will not be counted (e.g., spells that make tokens
 or creatures with alternative casting costs).
 
-A cube file must be provided via the positional argument. This
-should contain the cards appearing in the cube, one per line. If there are
-multiple copies of a card, that line should be repeated. This format was chosen
-because it is compatible with [cubetutor](https://www.cubetutor.com/) CSV
-output (columns after the first are ignored).
+A cube file must be provided via the positional argument. This should contain
+the cards appearing in the cube, one per line. If there are multiple copies of
+a card, that line should be repeated. This format is compatible with
+[cubetutor](https://www.cubetutor.com/) CSV output (columns after the first are
+ignored).
 
 Uses card data from the [Scryfall API](https://scryfall.com/docs/api/).
 
@@ -114,15 +114,45 @@ simic       0: 2 1: 9 2:19 3:23 4:16 5: 6 6: 6 7: 4 8: 2 10: 2 13: 1
 ![Color curves example](images/color_curves_example.png)
 ![Guild curves example](images/guild_curves_example.png)
 
-## Issues
+## Another example
 
-How to handle split cards? (e.g., Fire // Ice)? This is functionally
-similar to two independent cards, yet only one can go in a given deck.
+You can also calculate curves for subtypes for "tribal" cubes.
 
-Current implementation uses only the first half.
+```
+./cubealyzer.py -w --subtype human --plot my_modern_cube.csv
+Total cards in:
+abzan       310
+jeskai      306
+mardu       306
+sultai      305
+temur       308
+Cards of type creature (human) per wedge in:
+abzan       27
+jeskai      37
+mardu       32
+sultai      19
+temur       26
+Cards of type creature (human) at each cost in:
+abzan       1: 6 2: 7 3:10 4: 2 5: 1 6: 1
+jeskai      1: 6 2:13 3: 9 4: 6 5: 3
+mardu       1: 6 2:12 3: 8 4: 3 5: 2 6: 1
+sultai      1: 1 2: 7 3: 5 4: 4 5: 1 6: 1
+temur       1: 2 2:11 3: 5 4: 6 5: 2
+```
+
+![Subtype curves example](images/subtype_curves_example.png)
 
 ## Notes
 
 The four color faction (nephilim) names are from Commander 2016. (See [Multicolored#Four_colors](https://mtg.gamepedia.com/index.php?title=Multicolored&oldid=279219#Four_colors))
 
 Cards with only "X" costs (e.g., "Walking Ballista") have CMC 0.
+
+## Issues
+
+- How to handle split cards? (e.g., Fire // Ice)? This is functionally similar to
+two independent cards, yet only one can go in a given deck. Fortunately, these
+don't usually factor into the curve, which by default only considers creatures.
+
+- Token creators aren't considered "creatures" for curve purposes. There isn't a
+good way to handle this.

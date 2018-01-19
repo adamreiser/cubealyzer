@@ -46,7 +46,7 @@ class Cube():
                          len(row) > 0]:
 
                 # Download any uncached card data from public API
-                logging.info("Adding {}".format(name))
+                logging.info("Adding %s", name)
                 self.cards.add_card(name)
 
                 self.contents[name] += 1
@@ -187,10 +187,10 @@ class Cube():
 
         faction_list = mtg.Faction.get_factions(faction_type)
         print("{}Cards of type {}{} per {} in:{}".format(Style.BRIGHT,
-                                                                  card_type,
-                                                                  subtype_string,
-                                                                  mtg.Faction.fsh[faction_type],
-                                                                  Style.RESET_ALL))
+                                                         card_type,
+                                                         subtype_string,
+                                                         mtg.Faction.fsh[faction_type],
+                                                         Style.RESET_ALL))
 
         for faction in sorted(faction_list):
             cd = self.conditional_curve(lambda card: card_type in
@@ -208,8 +208,7 @@ class Cube():
         nephilim (four color combinations.)"""
 
         faction_list = mtg.Faction.get_factions(faction_type)
-        print("{}Total cards in:{}".format(Style.BRIGHT,
-                                                    Style.RESET_ALL))
+        print("{}Total cards in:{}".format(Style.BRIGHT, Style.RESET_ALL))
         for f in sorted(faction_list):
             print("{:12}{}".format(f, self.card_count(f)))
 
