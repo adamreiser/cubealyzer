@@ -57,7 +57,7 @@ optional arguments:
 Using [psyllogism's Modern Cube](http://www.cubetutor.com/viewcube/75206):
 
 ```
-$ ./cubealyzer.py -cg --plot my_modern_cube.csv
+$ ./cubealyzer.py -c -g --plot my_modern_cube.csv
 Total cards in:
 black       176
 blue        171
@@ -116,7 +116,7 @@ simic       0: 2 1: 9 2:19 3:23 4:16 5: 6 6: 6 7: 4 8: 2 10: 2 13: 1
 
 ## Another example
 
-You can also calculate curves for subtypes for "tribal" cubes.
+You can require that cards have a particular subtype to be counted in a curve:
 
 ```
 ./cubealyzer.py -w --subtype human --plot my_modern_cube.csv
@@ -150,9 +150,13 @@ Cards with only "X" costs (e.g., "Walking Ballista") have CMC 0.
 
 ## Issues
 
-- How to handle split cards? (e.g., Fire // Ice)? This is functionally similar to
+- How to handle split cards? (e.g., Fire // Ice) This is functionally similar to
 two independent cards, yet only one can go in a given deck. Fortunately, these
 don't usually factor into the curve, which by default only considers creatures.
 
 - Token creators aren't considered "creatures" for curve purposes. There isn't a
 good way to handle this.
+
+- Can't handle the un-set cards where name doesn't unambiguously identify a card.
+
+- Doesn't consider morphs.

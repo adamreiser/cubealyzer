@@ -269,7 +269,6 @@ class Cards():
             r = requests.get(query)
             if r.status_code == 200:
                 self.db[name] = json.loads(r.text)
-
                 # https://scryfall.com/docs/api/layouts
                 # Split cards should be handled differently - unclear how.
                 # Currently, just ignore other card faces, but if layout
@@ -306,6 +305,8 @@ class Cards():
                               self.db[name]['types'],
                               self.db[name]['subtypes'])
 
+                r.connection.close()
+
             # Too many requests: wait, decrease rate, try again
             elif r.status_code == 429:
                 logging.warning("Rate limit exceeded, throttling...")
@@ -315,9 +316,11 @@ class Cards():
 
             # Otherwise fail
             elif r.status_code == 404:
+                r.connection.close()
                 exit("Card {} not found in API!".format(name))
 
             else:
+                r.connection.close()
                 exit("Error communicating with API: status code {}".
                      format(r.status_code))
 
