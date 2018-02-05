@@ -253,9 +253,6 @@ if __name__ == '__main__':
     parser.add_argument('--plot', action='store_true',
                         help='Display plots of generated curves')
 
-    parser.add_argument('--test', action='store_true',
-                        help='Generate tests')
-
     parser.add_argument('-v', '--verbose', action='store_const', dest="loglevel",
                         const=logging.INFO, default=logging.WARNING,
                         help='Generate verbose output')
@@ -275,9 +272,6 @@ if __name__ == '__main__':
 
     thecube = Cube(args.cubefile, "{}.json".
                    format(os.path.splitext(args.cubefile)[0]))
-
-    if args.test:
-        mtg.create_tests()
 
     for faction_type in args.faction_types:
         thecube.show_card_counts(faction_type)

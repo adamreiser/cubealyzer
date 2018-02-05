@@ -27,7 +27,7 @@ you're having problems.
 ## Usage
 ```
 usage: cubealyzer.py [-h] [-t [type]] [--subtype [subtype]] [-c] [-g] [-s]
-                     [-w] [-n] [--plot] [--test] [-v] [-vv]
+                     [-w] [-n] [--plot] [-v] [-vv]
                      [FILE]
 
 Curve analysis tool for Magic: the Gathering cubes.
@@ -47,9 +47,8 @@ optional arguments:
   -w                   Calculate curves for wedges
   -n                   Calculate curves for nephilim
   --plot               Display plots of generated curves
-  --test               Generate tests
   -v, --verbose        Generate verbose output
-  -vv, --debug         Generate debug messages (and also verbose output)
+  -vv, --debug         Generate very verbose (debug) messages
 ```
 
 ## Example

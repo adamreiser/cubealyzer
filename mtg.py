@@ -9,19 +9,6 @@ import logging
 import requests
 
 
-def create_tests():
-    """Create tests asserting the validity of current state."""
-    print("import mtg\n")
-    for f in Faction.all_factions:
-        print("assert(mtg.Faction.who_can_play('{}') == {})".
-              format(f, Faction.who_can_play(f)))
-    # Test colorless (Eldrazi) mana
-    print("assert(mtg.Faction.who_can_play('{8}{C}{C}') == set())")
-    # Test strange hybrids (colorless/phyrexian mana)
-    print("assert(mtg.Faction.who_can_play('{{1}}{{P/C}}') == {})".
-          format(Faction.all_factions))
-
-
 class Faction:
     """Not intended to be instantiated."""
 
